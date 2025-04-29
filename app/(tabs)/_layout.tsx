@@ -21,6 +21,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="popular"
+        options={{
+            headerShown: false,
+          title: 'Popular',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="fire" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="account"
         options={{
             headerShown: false,

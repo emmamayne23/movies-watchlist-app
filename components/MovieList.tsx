@@ -10,9 +10,9 @@ import {
   ActivityIndicator,
   RefreshControl
 } from 'react-native';
-import { getTopRatedMovies, searchMovies } from '@/services/movieService';
+import { getPopularMovies, searchMovies } from '@/services/movieService';
 
-const SearchScreen = ({ navigation }: { navigation: any }) => {
+const MovieList = ({ navigation }: { navigation: any }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
   const fetchMovies = async () => {
     try {
       setLoading(true);
-      const data = await getTopRatedMovies();
+      const data = await getPopularMovies();
       setMovies(data);
       setError(null);
     } catch (err) {
@@ -42,7 +42,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
     try {
       setLoading(true);
       const results = searchQuery.trim() === '' 
-        ? await getTopRatedMovies() 
+        ? await getPopularMovies() 
         : await searchMovies(searchQuery);
       setMovies(results);
     } catch (err) {
@@ -105,8 +105,6 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         style={styles.searchBar}
       />
 
-        {/* <Text style={styles.rateText}>Top rated Movies</Text> */}
-
       <FlatList
         data={movies}
         renderItem={renderMovieItem}
@@ -134,13 +132,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f0f0f',
     paddingHorizontal: 10,
-  },
-  rateText: {
-    textAlign: "center",
-    color: "white",
-    paddingVertical: 20,
-    fontSize: 20,
-    fontWeight: "700",
   },
   searchBar: {
     backgroundColor: '#1f1f1f',
@@ -201,4 +192,71 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchScreen;
+export default MovieList;
+
+
+
+// import { useState } from "react";
+// import { View, TextInput, Button, FlatList, Text, Image, StyleSheet } from "react-native";
+// import { searchMovies } from "@/services/movieService";
+
+// export default function SearchScreen() {
+//   const [query, setQuery] = useState("");
+//   const [results, setResults] = useState([]);
+
+//   const handleSearch = async () => {
+//     const movies = await searchMovies(query);
+//     setResults(movies);
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <TextInput
+//         placeholder="Search movies..."
+//         value={query}
+//         onChangeText={setQuery}
+//         style={styles.input}
+//       />
+//       <Button title="Search" onPress={handleSearch} />
+//       <FlatList
+//         data={results}
+//         keyExtractor={(item) => item.id.toString()}
+//         renderItem={({ item }) => (
+//           <View style={styles.movieItem}>
+//             <Image
+//               source={{ uri: `https://image.tmdb.org/t/p/w200${item.poster_path}` }}
+//               style={styles.poster}
+//             />
+//             <Text style={styles.title}>{item.title}</Text>
+//           </View>
+//         )}
+//       />
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: { flex: 1, padding: 16 },
+//   input: {
+//     borderWidth: 1,
+//     padding: 10,
+//     marginBottom: 10,
+//     borderRadius: 8,
+//   },
+//   movieItem: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     marginBottom: 12,
+//   },
+//   poster: {
+//     width: 60,
+//     height: 90,
+//     marginRight: 12,
+//     borderRadius: 6,
+//   },
+//   title: {
+//     fontSize: 16,
+//     fontWeight: "bold",
+//     flexShrink: 1,
+//   },
+// });

@@ -6,20 +6,17 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   ActivityIndicator,
   RefreshControl
 } from 'react-native';
-import { getTopRatedMovies, searchMovies } from '@/services/movieService';
+import { getPopularMovies } from '@/services/movieService';
 
-const SearchScreen = ({ navigation }: { navigation: any }) => {
+const PopularScreen = ({ navigation }: { navigation: any }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fetch initial movies
   useEffect(() => {
     fetchMovies();
   }, []);
@@ -27,26 +24,13 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
   const fetchMovies = async () => {
     try {
       setLoading(true);
-      const data = await getTopRatedMovies();
+      const data = await getPopularMovies();
       setMovies(data);
       setError(null);
+    //   console.log(data)
     } catch (err) {
       setError('Failed to fetch movies');
       console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = async () => {
-    try {
-      setLoading(true);
-      const results = searchQuery.trim() === '' 
-        ? await getTopRatedMovies() 
-        : await searchMovies(searchQuery);
-      setMovies(results);
-    } catch (err) {
-      setError('Search failed');
     } finally {
       setLoading(false);
     }
@@ -96,16 +80,8 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="Search movies..."
-        placeholderTextColor="#888"
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onSubmitEditing={handleSearch}
-        style={styles.searchBar}
-      />
 
-        {/* <Text style={styles.rateText}>Top rated Movies</Text> */}
+        <Text style={styles.rateText}>Trending Movies</Text>
 
       <FlatList
         data={movies}
@@ -134,6 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f0f0f',
     paddingHorizontal: 10,
+    paddingVertical: 25,
   },
   rateText: {
     textAlign: "center",
@@ -201,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchScreen;
+export default PopularScreen;
