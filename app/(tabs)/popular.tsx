@@ -42,10 +42,15 @@ const PopularScreen = ({ navigation }: { navigation: any }) => {
   };
 
   const renderMovieItem = ({ item }: { item: Movie }) => (
-    <TouchableOpacity 
-      style={styles.movieCard}
-      onPress={() => navigation.navigate('MovieDetails', { movieId: item.id })}
-    >
+    <TouchableOpacity
+          style={styles.movieCard}
+          onPress={() =>
+            router.push({
+              pathname: "/movie/[id]",
+              params: { id: item.id },
+            })
+          }
+        >
       <Image
         source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
         style={styles.poster}

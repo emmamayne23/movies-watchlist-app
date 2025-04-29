@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,16 +8,19 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
-  RefreshControl
-} from 'react-native';
-import { getTopRatedMovies, searchMovies } from '@/services/movieService';
+  RefreshControl,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { getTopRatedMovies, searchMovies } from "@/services/movieService";
 
 const SearchScreen = ({ navigation }: { navigation: any }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  const router = useRouter();
 
   // Fetch initial movies
   useEffect(() => {
@@ -31,7 +34,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
       setMovies(data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch movies');
+      setError("Failed to fetch movies");
       console.error(err);
     } finally {
       setLoading(false);
@@ -41,12 +44,13 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
   const handleSearch = async () => {
     try {
       setLoading(true);
-      const results = searchQuery.trim() === '' 
-        ? await getTopRatedMovies() 
-        : await searchMovies(searchQuery);
+      const results =
+        searchQuery.trim() === ""
+          ? await getTopRatedMovies()
+          : await searchMovies(searchQuery);
       setMovies(results);
     } catch (err) {
-      setError('Search failed');
+      setError("Search failed");
     } finally {
       setLoading(false);
     }
@@ -58,9 +62,14 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
   };
 
   const renderMovieItem = ({ item }: { item: Movie }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.movieCard}
-      onPress={() => navigation.navigate('MovieDetails', { movieId: item.id })}
+      onPress={() =>
+        router.push({
+          pathname: "/movie/[id]",
+          params: { id: item.id },
+        })
+      }
     >
       <Image
         source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
@@ -68,9 +77,11 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         resizeMode="contain"
       />
       <View style={styles.infoContainer}>
-        <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+        <Text style={styles.title} numberOfLines={1}>
+          {item.title}
+        </Text>
         <Text style={styles.rating}>⭐ {item.vote_average.toFixed(1)}</Text>
-        <Text style={styles.year}>{item.release_date?.split('-')[0]}</Text>
+        <Text style={styles.year}>{item.release_date?.split("-")[0]}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -105,7 +116,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         style={styles.searchBar}
       />
 
-        {/* <Text style={styles.rateText}>Top rated Movies</Text> */}
+      {/* <Text style={styles.rateText}>Top rated Movies</Text> */}
 
       <FlatList
         data={movies}
@@ -114,9 +125,9 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         numColumns={2}
         columnWrapperStyle={styles.row}
         refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh} 
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
             tintColor="#fff"
           />
         }
@@ -128,11 +139,10 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f0f',
+    backgroundColor: "#0f0f0f",
     paddingHorizontal: 10,
   },
   rateText: {
@@ -143,60 +153,60 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   searchBar: {
-    backgroundColor: '#1f1f1f',
-    color: 'white',
+    backgroundColor: "#1f1f1f",
+    color: "white",
     borderRadius: 8,
     padding: 12,
     margin: 10,
     fontSize: 16,
   },
   row: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     marginBottom: 15,
   },
   movieCard: {
-    width: '48%',
+    width: "48%",
     marginBottom: 15,
   },
   poster: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 10,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
   },
   infoContainer: {
     padding: 5,
   },
   title: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 14,
     marginTop: 5,
   },
   rating: {
-    color: '#FFD700',
+    color: "#FFD700",
     fontSize: 12,
   },
   year: {
-    color: '#888',
+    color: "#888",
     fontSize: 12,
   },
   center: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0f0f0f',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#0f0f0f",
   },
   errorText: {
-    color: 'white',
+    color: "white",
     marginBottom: 10,
   },
   retryText: {
-    color: '#1E90FF',
+    color: "#1E90FF",
   },
   emptyText: {
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center",
     marginTop: 50,
   },
 });
