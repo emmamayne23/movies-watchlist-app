@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   RefreshControl
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { getPopularMovies } from '@/services/movieService';
 
 const PopularScreen = ({ navigation }: { navigation: any }) => {
@@ -16,6 +17,8 @@ const PopularScreen = ({ navigation }: { navigation: any }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  const router = useRouter()
 
   useEffect(() => {
     fetchMovies();

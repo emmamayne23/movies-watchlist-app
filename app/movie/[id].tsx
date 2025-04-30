@@ -10,11 +10,13 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams } from 'expo-router';
 import { getMovieDetails, getMovieTrailer } from '@/services/movieService';
 
-const MovieDetailsScreen = ({ route }) => {
-  const { id } = route.params;
-  const [movie, setMovie] = useState(null);
+const MovieDetailsScreen = () => {
+  const params = useLocalSearchParams()
+  const { id } = params;
+  const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [trailerKey, setTrailerKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,6 +40,8 @@ const MovieDetailsScreen = ({ route }) => {
     fetchData();
   }, [id]);
 
+  if(!movie) return null;
+
   if (loading) return <ActivityIndicator style={styles.loader} size="large" />;
   if (error) return <Text style={styles.error}>{error}</Text>;
 
@@ -48,10 +52,6 @@ const MovieDetailsScreen = ({ route }) => {
         <Image
           source={{ uri: `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` }}
           style={styles.backdrop}
-        />
-        <LinearGradient
-          colors={['transparent', '#0f0f0f']}
-          style={styles.gradient}
         />
       </View>
 

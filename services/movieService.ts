@@ -2,30 +2,7 @@ import axios from "axios"
 const TMDB_API_KEY = process.env.EXPO_PUBLIC_TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
-interface MovieDetails {
-    id: number;
-    title: string;
-    backdrop_path: string;
-    poster_path: string;
-    overview: string;
-    release_date: string;
-    runtime: number;
-    vote_average: number;
-    genres: { id: number; name: string }[];
-    status: string;
-    budget: number;
-    credits?: {
-      cast: {
-        name: string;
-        character: string;
-      }[];
-    };
-  }
-  
-  interface Trailer {
-    key: string;
-    type: string;
-  }
+
 
 export const searchMovies = async (query: string) => {
     try {
@@ -80,9 +57,9 @@ export const getMovieDetails = async (id: number): Promise<MovieDetails> => {
       const response = await axios.get(
         `${TMDB_BASE_URL}/movie/${id}/videos?api_key=${TMDB_API_KEY}`
       );
-      return response.data.results.find(video => video.type === 'Trailer') || {};
+      return response.data.results.find((video: { type: string }) => video.type === 'Trailer') || {};
     } catch (error) {
       console.error('Error fetching trailer:', error);
-      return {};
+      return { key: "", type: "" };
     }
   };
